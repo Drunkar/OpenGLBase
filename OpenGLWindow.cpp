@@ -34,68 +34,68 @@ OpenGLWindow::OpenGLWindow(int width, int height, int dimension, double red, dou
 
 //init ----------------------------------------------------------------------------------------
 void OpenGLWindow::create(){
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-    glutInitWindowPosition(100, 100);
-    glutInitWindowSize(m_width, m_height);	//call size before create
-	
-	glutCreateWindow(m_title);	//call func after create
+  glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+  glutInitWindowPosition(100, 100);
+  glutInitWindowSize(m_width, m_height);	//call size before create
+  
+  glutCreateWindow(m_title);	//call func after create
     
 }
 
 void OpenGLWindow::start(void (*displayFunc)(),
-	       void (*resizeFunc)(int, int),
-	       void (*keyboardFunc)(unsigned char, int, int),
-	       void (*mouseFunc)(int, int, int, int),
-	       void (*mouseMotionFunc)(int, int),
-		   void (*mouseWheelFunc)(int, int, int, int),
-	       void (*idleFunc)()){
+			 void (*resizeFunc)(int, int),
+			 void (*keyboardFunc)(unsigned char, int, int),
+			 void (*mouseFunc)(int, int, int, int),
+			 void (*mouseMotionFunc)(int, int),
+			 void (*mouseWheelFunc)(int, int, int, int),
+			 void (*idleFunc)()){
 
 			   
-	glClearColor(m_backgroundRed, m_backgroundGreen, m_backgroundBlue, 1.0);
+  glClearColor(m_backgroundRed, m_backgroundGreen, m_backgroundBlue, 1.0);
 			   
-	glutDisplayFunc(displayFunc);
-	glutReshapeFunc(resizeFunc);
-	glutKeyboardFunc(keyboardFunc);
-	glutMouseFunc(mouseFunc);
-	glutMotionFunc(mouseMotionFunc);
-	glutMouseWheelFunc(mouseWheelFunc); // commentout if mac
-	idleFunc_ = idleFunc;
+  glutDisplayFunc(displayFunc);
+  glutReshapeFunc(resizeFunc);
+  glutKeyboardFunc(keyboardFunc);
+  glutMouseFunc(mouseFunc);
+  glutMotionFunc(mouseMotionFunc);
+  glutMouseWheelFunc(mouseWheelFunc); // commentout if mac
+  idleFunc_ = idleFunc;
   
-	// anti-aliasing
-	glEnable(GL_POINT_SMOOTH);
-	glEnable(GL_LINE_SMOOTH);
-	glEnable(GL_POLYGON_SMOOTH);
+  // anti-aliasing
+  glEnable(GL_POINT_SMOOTH);
+  glEnable(GL_LINE_SMOOTH);
+  glEnable(GL_POLYGON_SMOOTH);
 
-	if(m_dimension == 3){
-	  // for light
-	  glEnable(GL_DEPTH_TEST);
-	  glEnable(GL_LIGHTING);
-	  glEnable(GL_LIGHT0);
-	  qtor(m_rotate, M_Current);
-
-	  glMatrixMode(GL_PROJECTION);
-	  glLoadIdentity();
-	  //視野角,アスペクト比(ウィンドウの幅/高さ),描画する範囲(最も近い距離,最も遠い距離)
-	  gluPerspective(30.0, m_width / m_height, 1.0, 1000.0);
-	  glMatrixMode(GL_MODELVIEW);
-	  glLoadIdentity();
-	  //視点の設定
-	  gluLookAt(0,100.0,200.0, //カメラの座標
-		    0.0,0.0,0.0, // 注視点の座標
-		    0.0,1.0,0.0); // 画面の上方向を指すベクトル
-	} else if (m_dimension == 2){
-	  glMatrixMode(GL_PROJECTION);
-	  glLoadIdentity();
-	  glOrtho(-100 , 100 , -100 , 100 , 1 , 1000);
-	  glMatrixMode(GL_MODELVIEW);
-	  glLoadIdentity();
-	  //視点の設定
-	  gluLookAt(0,100.0,200.0, //カメラの座標
-		    0.0,0.0,0.0, // 注視点の座標
-		    0.0,1.0,0.0); // 画面の上方向を指すベクトル
-	}
-	
-	glutMainLoop();
+  if(m_dimension == 3){
+    // for light
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    qtor(m_rotate, M_Current);
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    //視野角,アスペクト比(ウィンドウの幅/高さ),描画する範囲(最も近い距離,最も遠い距離)
+    gluPerspective(30.0, m_width / m_height, 1.0, 1000.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    //視点の設定
+    gluLookAt(0,100.0,200.0, //カメラの座標
+	      0.0,0.0,0.0, // 注視点の座標
+	      0.0,1.0,0.0); // 画面の上方向を指すベクトル
+  } else if (m_dimension == 2){
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-100*m_width/m_height , 100*m_width/m_height , -100 , 100 , 1 , 1000);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    //視点の設定
+    gluLookAt(0,100.0,200.0, //カメラの座標
+	      0.0,0.0,0.0, // 注視点の座標
+	      0.0,1.0,0.0); // 画面の上方向を指すベクトル
+  }
+  
+  glutMainLoop();
 
 }
 
@@ -144,6 +144,14 @@ void OpenGLWindow::keyboard(unsigned char key, int x, int y){
     m_scaled *= 0.9;
     glScaled(0.9, 0.9, 0.9);
     m_wheel--;
+    glutPostRedisplay();
+    break;
+  case 'r':
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(0,100.0,200.0, //カメラの座標
+	      0.0,0.0,0.0, // 注視点の座標
+	      0.0,1.0,0.0); // 画面の上方向を指すベクトル
     glutPostRedisplay();
     break;
   case '\033':			//ESC
